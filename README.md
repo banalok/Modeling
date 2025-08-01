@@ -31,8 +31,9 @@ Output – comb_astro_data.csv appears in the working directory.
 
 ## Simulation Details
 
-| Parameter          | Default value | Notes                                                                                                                   |
-|--------------------|---------------|-------------------------------------------------------------------------------------------------------------------------|
-| **Total duration** | 0 – 30 s      | Adjustable in `ast_modeling.py` (see comments within the script)                                                                 |
-| **K⁺ stimulation** | 22 s – 23 s   | Adjustable Amplitude & timing (see comments within the script)                                                                      |
-| **Morphology file**| `NMO_73320.txt` | Contains multi-compartment astrocyte geometry; current script uses a single-compartment with “whole-cell” model parameters  |
+| Parameter          | Default value | Notes                                                                                                                      |
+|--------------------|---------------|----------------------------------------------------------------------------------------------------------------------------|
+| Total duration | 0 – 30 s      | Adjustable in `ast_modeling.py` (see comments within the script)                                                               |
+| K⁺ stimulation | 22 s – 23 s   | Adjustable Amplitude & timing (see comments within the script)                                                                           |
+| Morphology file| `NMO_73320.txt` | Contains multi-compartment astrocyte geometry; current script uses a single-compartment with “whole-cell” model parameters |
+
