@@ -31,6 +31,7 @@ Output – comb_astro_data.csv appears in the working directory.
 
 ## Simulation Details
 
+```
 | Parameter          | Default value | Notes                                                                                                                      |
 |--------------------|---------------|----------------------------------------------------------------------------------------------------------------------------|
 | Total duration | 0 – 30 s      | Adjustable in `ast_modeling.py` (see comments within the script)                                                               |

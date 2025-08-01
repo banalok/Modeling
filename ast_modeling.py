@@ -119,7 +119,7 @@ if __name__ == "__main__":
             N_1 = 0
             N_2 = 1
             stim_start_nt = 220000000   #220000000 #22nd second 1000000000
-            stim_end_nt = 230000000  #230000000 #22.1st second       100ms of stimulation  2200000000
+            stim_end_nt = 230000000  #230000000 #23rd second     
             stim_type = "Potassium"
 
             if stim_type == "Potassium":
@@ -136,7 +136,7 @@ if __name__ == "__main__":
                 astrocyte = Astrocyte(dt=0.00000010, N=N, Ra=400.0, Cm1=1.0, astrocyte_data=astrocyte_data_file, stim_start_nt=stim_start_nt, stim_end_nt=stim_end_nt, glut_stim=None, pot_stim=pot_stims_array, stim_comp_glut=None, stim_comp_pot=pot_stim_comps_array) 
                 
                 iskip = 1000 #for testing/identifying only the base and the peak if needed, use 1000; else 16000
-                last = 240000000  # for testing/identifying only the base and the peak if needed, use 300000000; else 10000000000 for 1000s
+                last = 300000000  # for testing/identifying only the base and the peak if needed, use 300000000; else 10000000000 for 1000s
 
                 vs,  Kos, Naks, Clks, Kks, Nass, time_array, JNaKks, phis, phos, Icoups, IdiffKs, IdiffNas, IdiffCas, Caks, JNaks, JTRPVks, Iks, JNBCks, JNHEs, JNKCC1ks, JNCXs, JNaKks_alpha2beta1, JNaKks_alpha2beta2 = astrocyte.astrocyte_dynamics_diffusion(iskip, last) 
                 
