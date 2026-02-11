@@ -203,16 +203,16 @@ if __name__ == "__main__":
 
             ids = df[:, 0].astype(int)   
 
-            
-            # Build segments (parent -> child, then None to break)
-            id2idx = {nid: i for i, nid in enumerate(ids)}
-            Xs, Ys, Zs = [], [], []
-            for i, pid in enumerate(parents):
-                if pid > 0 and pid in id2idx:
-                    p = id2idx[pid]
-                    Xs += [xaxis[p], xaxis[i], None]
-                    Ys += [yaxis[p], yaxis[i], None]
-                    Zs += [zaxis[p], zaxis[i], None] 
+            #  Uncomment for parent-child visualization purpose
+            # # Build segments (parent -> child, then None to break) 
+            # id2idx = {nid: i for i, nid in enumerate(ids)}
+            # Xs, Ys, Zs = [], [], []
+            # for i, pid in enumerate(parents):
+            #     if pid > 0 and pid in id2idx:
+            #         p = id2idx[pid]
+            #         Xs += [xaxis[p], xaxis[i], None]
+            #         Ys += [yaxis[p], yaxis[i], None]
+            #         Zs += [zaxis[p], zaxis[i], None] 
 
             data_size = df.shape[0]        
             
