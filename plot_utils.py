@@ -1,123 +1,4 @@
-# %%
-######################################### Test for Glutamate and Ex. K+ trends #############################################################################################
-
-import numpy as np
-from numba import njit
-import matplotlib.pyplot as plt
-
-@njit
-def run():
-    N = 1
-    nt= 300000000  # Total number of timesteps
-    dt = 0.0000001  # Time step size
-    t_in = 20.0  # Start time for recording data
-    iskip = 16000  # Store every 1000th point
-
-    stim_start_nt = 220000000   #220000000 #22nd second 1000000000
-    stim_end_nt = 220500000  # End of stimulation
-
-    stim_comp_glut = np.arange(0, N)  # Compartments affected by stimulation
-    glut_stim = np.ones(N) * 1300.00  # Initial glutamate concentration
-
-    # Allocate space for data storage
-    num_records = (nt - int(t_in / dt)) // iskip
-    Glus = np.zeros((N, num_records))  # Store glutamate concentrations
-    time_array = np.zeros(num_records)  # Store corresponding time points
-    kss = np.zeros((N, num_records))
-    # Glu_all = np.zeros((N, nt)) 
-    time_t = 0.0  # Current simulation time
-    j_10 = 0  # Index for storing records
-    
-    for ii in range(1, nt + 1):
-        Glu = np.zeros(N)
-        # Update simulation time
-        time_t += dt
-
-        # Stimulation phase
-        if stim_start_nt*dt <= ii <= stim_end_nt*dt:
-            for i, comp in enumerate(stim_comp_glut):
-                stim_value = glut_stim[i]
-                Glu[comp] = stim_value
-
-        # Exponential decay phase
-        elif ii*dt > stim_end_nt*dt:
-            for i, comp in enumerate(stim_comp_glut):
-                stim_value = glut_stim[i]
-                Glu[comp] = stim_value * np.exp(-(ii*dt - stim_end_nt*dt) / 0.5)
-        # Glu_all[:, ii] = Glu 
-        # Store data every 'iskip' steps after time > t_in
-        if time_t > t_in and ii % iskip == 0:
-            time_array[j_10] = time_t
-            Glus[:, j_10] = Glu
-            j_10 += 1  # Increment storage index
-    # Glu_all_s = Glu_all.shape
-    return time_array, Glus
-
-# Run the simulation and plot the results
-time_array, Glus = run()
-
-# Plot the results
-plt.plot(time_array, Glus[0])
-plt.xlabel('Time (s)')
-plt.ylabel('Glu Concentration (µM)')
-plt.title('Glutamate Concentration Decay')
-plt.show()
-#     Ks = np.ones(N) * 2900.0 
-#     stim_comp_pot = np.arange(0, N)  # Compartments affected by stimulation
-#     pot_stim = np.ones(N) * 1100.00   # -2300 4100.00# to have global, decaying stimulation at each compartment. THis replaces the one that comes from the UI
-#     pot_stim_amp = 4000  # 7000 600  # 7000    
-#     alpha = 0.01
-#     beta = 0.01
-#     for ii in range(1, nt+1):
-#         # Glu = np.zeros(N)
-#         # Pot = np.zeros(N)
-#         time_t = time_t + dt 
-
-#         # Icoup = np.zeros(N)
-#         # IdiffK = np.zeros(N)
-#         # IdiffNa = np.zeros(N)
-#         # IdiffCa = np.zeros(N)
-#         # Na_stim = np.zeros(N)         
-#         for k in range(N):
-#             if pot_stim is not None:
-#                 if stim_start_nt*dt <= ii*dt <= stim_end_nt*dt:
-#                     # corresponding stimulation values
-#                     for i, comp in enumerate(stim_comp_pot):                        
-#                         if k == comp:
-#                             stim_value = pot_stim[i]
-#                             Ks[k] = 2900 +  stim_value *(1 - np.exp(-alpha * (ii * dt - stim_start_nt * dt)))
-
-#                         if k+1 == N:
-#                             break
-#                         else:
-#                             pass
-#                         # print("No diffusion")
-
-#                 elif ii*dt > stim_end_nt*dt:
-#                     # with exponential decay after stimulation ends
-#                     for i, comp in enumerate(stim_comp_pot):
-#                         if k == comp:                            
-#                             stim_value = pot_stim[i]                            
-#                             Ks[k] = pot_stim_amp * np.exp(-beta * (ii * dt - stim_end_nt  * dt)) + 2900 * (1 - np.exp(-beta * (ii * dt - stim_end_nt * dt))) #2900 + 4100 * np.exp(-(ii * dt - stim_start_nt * dt) / 0.9) 
-                            
-#                         if k+1 == N:
-#                             break
-#                         else:
-#                             pass
-#                             # print("No diffusion_2")   
-#         if time_t > t_in and ii % iskip == 0:
-#             time_array[j_10] = time_t
-#             kss[:, j_10] = Ks
-#             j_10 += 1  # Increment storage index
-#     return time_array, kss
-    
-# # # Run the simulation and plot the results
-# time_array, kss = run()
-# # Plot the results
-# plt.plot(time_array, kss[0])
-# plt.xlabel('Time (s)')
-# plt.ylabel('[K+] (µM)')
-# plt.show()
+ ################################### File paths need to be adjusted for each utiliy plot in case used ########################################################################
 
 # %%
 ###################################### Change in Baseline (Delta Na_i) ##################################################################################################
@@ -1979,6 +1860,8 @@ axs[3].tick_params(axis='y', labelsize=20, which="minor")  # Change y-tick font 
 plt.tight_layout()
 plt.show()
 
+
+############################################################################################################################################
 # %%
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -2457,29 +2340,158 @@ plt.tight_layout()
 # plt.subplots_adjust(right=0.85)
 plt.show()
 
-##################################################### randon neuron test ####################################################################
 # %%
+################################################################# Spatial Plots #############################################################################################################
 
+
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.colors import Normalize
+import ast
 
-stim_start = 250000.0
-stim_dur = 250000.0
-n_stim = 10
-n_stimulated=3
-stim_amp = 230
-Na_stim = np.zeros(50)
-for i in range (0, 2000000):
-    for k in range(50):
-        if (i >= stim_start) and (i < stim_start + stim_dur):
-            if (k >= n_stim) and (k < n_stim + n_stimulated):
-                Na_stim[k] = stim_amp
-        elif (i >= stim_start + stim_dur):
-            if (k >= n_stim) and (k < n_stim + n_stimulated):
-                Na_stim[k] = stim_amp * np.exp(10 * (stim_start + stim_dur - i) / (stim_start + stim_dur))
+# File paths
+morphology_file = "G:/Alok/NMO_282188.txt"
+branches_csv = "G:/Alok/branch_to_comps.csv"
+signals_csv = "G:/Alok/comb_astro_data_highKFull.csv"
+distances_csv = "G:/Alok/distance_from_soma.csv"
+branch_name = "branch_5"
 
-x = np.arange(0,50)
-plt.plot(x, Na_stim)
+# Load data
+morphology_df = pd.read_csv(morphology_file, sep=' ', header=None, 
+                            names=['id', 'type', 'x', 'y', 'z', 'radius', 'parent'])
+branches_df = pd.read_csv(branches_csv)
+signals_df = pd.read_csv(signals_csv)
+distances_df = pd.read_csv(distances_csv)
+
+# Get compartments for this branch
+compartments = ast.literal_eval(branches_df[branches_df['branch'] == branch_name]['compartments'].iloc[0])
+
+# Calculate baseline for each compartment in the branch
+time_col = signals_df['Time']
+baseline_mask = (time_col > 20) & (time_col < 22)
+
+compartment_baselines = {}
+for comp in compartments:
+    nak_col = f'Nak_{comp}'
+    baseline = signals_df.loc[baseline_mask, nak_col].median()
+    compartment_baselines[comp] = baseline
+
+# Get min and max baseline for color scaling
+baseline_values = list(compartment_baselines.values())
+vmin = min(baseline_values)
+vmax = max(baseline_values)
+
+# Create colormap
+norm = Normalize(vmin=vmin, vmax=vmax)
+cmap = cm.get_cmap('coolwarm')
+
+# Calculate baseline and peak for each compartment
+baseline_data = []
+amplitude_data = []
+distance_data = []
+
+for comp in compartments:
+    nak_col = f'Nak_{comp}'
+    
+    # Baseline: median of pre-stimulus data
+    baseline = signals_df.loc[baseline_mask, nak_col].median()
+    
+    # Peak: maximum across entire time series
+    peak = signals_df[nak_col].min()
+    print(peak)
+    
+    # Distance from soma
+    distance = distances_df[distances_df['Compartment_Index'] == comp]['Distance_from_Soma_um'].iloc[0]
+    
+    baseline_data.append(baseline)
+    amplitude_data.append(abs(peak-baseline))
+    distance_data.append(distance)
+
+# Sort by distance
+sorted_idx = np.argsort(distance_data)
+distance_data = np.array(distance_data)[sorted_idx]
+baseline_data = np.array(baseline_data)[sorted_idx]
+baseline_data_norm = abs(baseline_data - baseline_data.min())
+amplitude_data = np.array(amplitude_data)[sorted_idx]
+amplitude_data_norm = abs(amplitude_data - amplitude_data.min())
+
+# Create figure with GridSpec for custom layout
+fig = plt.figure(figsize=(10, 8))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.2, 1], hspace=0.3, wspace=0.3)
+
+# Left: Morphology plot
+ax_morph = fig.add_subplot(gs[:, 0])
+ax_morph.set_facecolor('white')
+
+# Plot all compartments and connections
+for idx, row in morphology_df.iterrows():
+    if row['parent'] != -1:
+        parent = morphology_df[morphology_df['id'] == row['parent']].iloc[0]
+        
+        # Check if this compartment is in the selected branch
+        comp_id = row['id'] - 1  # Convert to 0-based indexing
+        if comp_id in compartments:
+            # Color based on baseline value
+            color = cmap(norm(compartment_baselines[comp_id]))
+            linewidth = 4
+            alpha = 1.0
+            zorder = 3
+        else:
+            color = '#2C3E50'  # Dark blue-gray for processes
+            linewidth = 1.5
+            alpha = 0.6
+            zorder = 2
+        
+        ax_morph.plot([parent['x'], row['x']], 
+                [parent['y'], row['y']], 
+                color=color, linewidth=linewidth, alpha=alpha, zorder=zorder,
+                solid_capstyle='round')
+
+colors = [cmap(norm(compartment_baselines[c])) for c in compartments]
+# Mark soma compartments with large circles
+soma_coords = morphology_df[morphology_df['type'] == 1].iloc[0]
+if not soma_coords.empty:
+    ax_morph.scatter(soma_coords['x'], soma_coords['y'], 
+               facecolors='none', s=150, alpha=0.9, edgecolors="#14DF51", 
+               linewidths=2, zorder=4, label='Soma')
+
+# Mark branch compartments with circles colored by baseline
+branch_coords = morphology_df[morphology_df['id'].isin([c+1 for c in compartments])]
+scatter = ax_morph.scatter(branch_coords['x'], branch_coords['y'], 
+           c=colors, s=20, alpha=0.5, edgecolors='black', 
+           linewidths=1.5, zorder=5)
+
+ax_morph.set_xlabel('X (μm)', fontsize=14, fontweight='bold')
+ax_morph.set_ylabel('Y (μm)', fontsize=14, fontweight='bold')
+# ax_morph.set_title(f'Astrocyte Morphology - {branch_name} Highlighted by Baseline Na$_i$', 
+#              fontsize=16, fontweight='bold', pad=20)
+ax_morph.set_aspect('equal')
+ax_morph.legend(fontsize=12, framealpha=0.9, loc='best')
+ax_morph.spines['top'].set_visible(False)
+ax_morph.spines['right'].set_visible(False)
+ax_morph.set_facecolor('#F8F9FA')
+
+# Add colorbar
+cbar = plt.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax_morph)
+cbar.set_label('Baseline Na$_i$ (mM)', fontsize=12, fontweight='bold')
+
+# Right top: Baseline plot
+ax1 = fig.add_subplot(gs[0, 1])
+ax1.plot(distance_data, baseline_data_norm, 'o-', linewidth=2, markersize=8, color='blue')
+ax1.set_xlabel('Distance from Soma (μm)', fontsize=12)
+ax1.set_ylabel('Δ[Na$^+$]$_i$ Baseline (mM)', fontsize=12)
+ax1.set_title('High K$^+$ Stimulation', fontsize=14)
+ax1.grid(True, alpha=0.3)
+
+# Right bottom: Peak plot
+ax2 = fig.add_subplot(gs[1, 1])
+ax2.plot(distance_data, amplitude_data_norm, 'o-', linewidth=2, markersize=8, color='red')
+ax2.set_xlabel('Distance from Soma (μm)', fontsize=12)
+ax2.set_ylabel('Δ[Na$^+$]$_i$ Amplitude (mM)', fontsize=12)
+# ax2.set_title(f'{branch_name}: Peak Na$_k$ vs Distance', fontsize=14)
+ax2.grid(True, alpha=0.3)
+
+plt.tight_layout()
 plt.show()
-# %%
-
