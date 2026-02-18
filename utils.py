@@ -246,7 +246,7 @@ def update_astrocyte_dynamics(dt, identifier, gamma, parents, DiffNa, DiffK, Dif
                         IdiffCa[k] = DiffCa[k] * (Cai[j2-1] - Cai[k]) 
                         IdiffCa[j2-1] += DiffCa[j2-1] * (Cai[k] - Cai[j2-1]) 
                     else:
-                        continue
+                        pass
 
                 elif stim_start_nt*dt <= ii*dt <= stim_end_nt*dt:
                     # corresponding stimulation values
@@ -299,7 +299,7 @@ def update_astrocyte_dynamics(dt, identifier, gamma, parents, DiffNa, DiffK, Dif
                         IdiffCa[k] = DiffCa[k] * (Cai[j2-1] - Cai[k]) 
                         IdiffCa[j2-1] += DiffCa[j2-1] * (Cai[k] - Cai[j2-1]) 
                     else:
-                        continue
+                        pass
                 elif stim_start_nt*dt <= ii*dt <= stim_end_nt*dt:
                     # corresponding stimulation values
                     for i, comp in enumerate(stim_comp_pot):                        
